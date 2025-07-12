@@ -1,0 +1,45 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongodb:27017/users
+      - JWT_SECRET=supersecret
+    depends_on:
+      - mongodb
+
+  quiz-service:
+    build: ./quiz-service
+    container_name: quiz-service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - MONGO_URI=mongodb://mongodb:27017/quizzes
+      - JWT_SECRET=supersecret
+    depends_on:
+      - mongodb
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - quiz-service
+
+volumes:
+  mongo-data:
