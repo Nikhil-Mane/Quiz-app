@@ -52,7 +52,7 @@ describe("Quiz API", () => {
     sinon.restore();
   });
 
-  it("should create a quiz (POST /api/quizzes)", async () => {
+  it("should create a quiz (POST /)", async () => {
     quizStub = sinon.stub(Quiz.prototype, "save").resolves(mockQuiz);
 
     const res = await chai
